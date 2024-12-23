@@ -14,11 +14,11 @@ import pydantic
 import simple_parsing
 from tenacity import retry, stop_after_attempt, wait_fixed
 
+from examples.inference.run_classifier import get_model_response as get_classifier_response
 from safetytooling.safetytooling.apis.inference.api import InferenceAPI
 from safetytooling.safetytooling.data_models.messages import ChatMessage, MessageRole, Prompt
 from safetytooling.safetytooling.data_models.utils import RecitationRateFailureError
 from safetytooling.safetytooling.utils import utils
-from examples.inference.run_classifier import get_model_response as get_classifier_response
 from safetytooling.safetytooling.utils.experiment_utils import ExperimentConfigBase
 from safetytooling.safetytooling.utils.text_utils import get_attack_string, get_tokenizer
 

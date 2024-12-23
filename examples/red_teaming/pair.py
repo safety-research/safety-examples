@@ -289,13 +289,7 @@ async def main(
     (cfg.output_dir / "work").mkdir(exist_ok=True, parents=True)
 
     input_objs = [
-        input_obj
-        | dict(
-            request=await create_target_prompt(
-                input_obj["request"], cfg
-            )
-        )
-        for input_obj in input_objs
+        input_obj | dict(request=await create_target_prompt(input_obj["request"], cfg)) for input_obj in input_objs
     ]
 
     pair_responses: list[dict] = await tqdm.gather(

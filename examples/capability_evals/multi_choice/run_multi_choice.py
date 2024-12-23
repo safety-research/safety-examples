@@ -12,12 +12,12 @@ from simple_parsing import ArgumentParser
 from tqdm.asyncio import tqdm_asyncio
 from tqdm.auto import tqdm
 
-from safetytooling.safetytooling.apis import InferenceAPI
 from examples.capability_evals.multi_choice.load import (
     LoadConfig,
     load_saved_dataset_from_config,
 )
 from examples.capability_evals.multi_choice.score import ScoreConfig, get_accuracy
+from safetytooling.safetytooling.apis import InferenceAPI
 from safetytooling.safetytooling.data_models import ChatMessage, MessageRole, Prompt
 from safetytooling.safetytooling.utils import utils
 from safetytooling.safetytooling.utils.experiment_utils import ExperimentConfigBase

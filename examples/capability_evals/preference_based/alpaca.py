@@ -10,8 +10,8 @@ import scipy.special
 from tqdm.asyncio import tqdm_asyncio
 from typing_extensions import Self
 
-from safetytooling.safetytooling.apis.utils import binary_response_logit
 from safetytooling.safetytooling.apis import InferenceAPI
+from safetytooling.safetytooling.apis.utils import binary_response_logit
 from safetytooling.safetytooling.data_models import ChatMessage, LLMResponse, MessageRole, Prompt
 from safetytooling.safetytooling.utils import utils
 

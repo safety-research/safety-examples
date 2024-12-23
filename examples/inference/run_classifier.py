@@ -34,9 +34,9 @@ import simple_parsing
 import simple_parsing.helpers
 from tqdm.auto import tqdm
 
-from safetytooling.safetytooling.apis.utils import binary_response_logit
-from safetytooling.safetytooling.apis.inference.openai.utils import GPT_CHAT_MODELS
 from safetytooling.safetytooling.apis import InferenceAPI
+from safetytooling.safetytooling.apis.inference.openai.utils import GPT_CHAT_MODELS
+from safetytooling.safetytooling.apis.utils import binary_response_logit
 from safetytooling.safetytooling.data_models.messages import Prompt
 from safetytooling.safetytooling.utils import utils
 from safetytooling.safetytooling.utils.experiment_utils import ExperimentConfigBase
