@@ -9,7 +9,7 @@ from simple_parsing import ArgumentParser
 from tqdm.auto import tqdm
 
 from safetytooling.safetytooling.apis import InferenceAPI
-from safetytooling.safetytooling.utils import defence_utils, utils
+from safetytooling.safetytooling.utils import utils
 from safetytooling.safetytooling.utils.experiment_utils import ExperimentConfigBase
 
 LOGGER = logging.getLogger(__name__)
@@ -38,7 +38,6 @@ async def get_model_response(
     n_samples: int = 1,
     temperature: float = 1.0,
     max_tokens: int | None = None,
-    add_punctuation: bool = False,
     print_prompt_and_response: bool = False,
 ) -> dict:
     new_data = {
@@ -111,9 +110,6 @@ async def main(
     if "response" in df.columns:
         # some testsets have a response column so we remove it
         df = df.drop(columns="response")
-    if cfg.filter_by_input_classifier:
-        assert "input_classifier_output" in df.columns, "input_classifier_output not in df"
-        df = defence_utils.process_input_classifier_output(df)
 
     # dedupe based on request_tag
     num_duplicates = df.duplicated(subset=[cfg.request_tag]).sum()

@@ -33,21 +33,17 @@ class ExperimentConfig(ExperimentConfigBase):
     """
 
     response_input_file: pathlib.Path | None
-    classifier_models: tuple[str, ...] = ("gpt-4-0125-preview",)
+    classifier_models: tuple[str, ...] = ("gpt-4o",)
     file_name: str = "classifier-responses.jsonl"
 
-    classifier_template: str = "classifiers/harmbench/harmbench-standard.jinja"
+    classifier_template: str = "harmbench/harmbench-gpt-4.jinja"
     classifier_fields: dict[str, str] = simple_parsing.helpers.dict_field(
-        dict(behavior="behavior", model_output="response"),
+        dict(behavior="behavior_str", assistant_response="response"),
         type=json.loads,
     )
     temperature: float = 0.0
     max_tokens: int = 4
     n_samples: int = 1
-
-    # If n_retries_for_parsing set, classifier_template must have builtin parser
-    n_retries_for_parsing: int | None = None
-    n_parsing_workers: int = 1
 
     model_outputs_tag: str | None = "responses"
     model_output_tag: str = "response"
