@@ -1,9 +1,9 @@
 import logging
 
 from datasets import concatenate_datasets, load_dataset
+from safetytooling.data_models.dataset import DatasetQuestion
 
 from examples.capability_evals.multi_choice.dataset import Dataset
-from safetytooling.safetytooling.data_models.dataset import DatasetQuestion
 
 LOGGER = logging.getLogger(__name__)
 

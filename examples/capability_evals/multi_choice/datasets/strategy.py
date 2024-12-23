@@ -1,8 +1,8 @@
 from datasets import load_dataset
 from numpy import argmax
+from safetytooling.data_models.dataset import DatasetQuestion
 
 from examples.capability_evals.multi_choice.dataset import Dataset
-from safetytooling.safetytooling.data_models.dataset import DatasetQuestion
 
 
 class StrategyDataset(Dataset):

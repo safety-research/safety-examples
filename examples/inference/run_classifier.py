@@ -9,15 +9,14 @@ import pandas as pd
 import scipy.special
 import simple_parsing
 import simple_parsing.helpers
+from safetytooling.apis import InferenceAPI
+from safetytooling.apis.inference.openai.utils import GPT_CHAT_MODELS
+from safetytooling.apis.utils import binary_response_logit
+from safetytooling.data_models.messages import Prompt
+from safetytooling.utils import utils
+from safetytooling.utils.experiment_utils import ExperimentConfigBase
+from safetytooling.utils.prompt_utils import get_prompt_template
 from tqdm.auto import tqdm
-
-from safetytooling.safetytooling.apis import InferenceAPI
-from safetytooling.safetytooling.apis.inference.openai.utils import GPT_CHAT_MODELS
-from safetytooling.safetytooling.apis.utils import binary_response_logit
-from safetytooling.safetytooling.data_models.messages import Prompt
-from safetytooling.safetytooling.utils import utils
-from safetytooling.safetytooling.utils.experiment_utils import ExperimentConfigBase
-from safetytooling.safetytooling.utils.prompt_utils import get_prompt_template
 
 LOGGER = logging.getLogger(__name__)
 

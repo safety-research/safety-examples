@@ -7,13 +7,12 @@ import datasets
 import numpy as np
 import pydantic
 import scipy.special
+from safetytooling.apis import InferenceAPI
+from safetytooling.apis.utils import binary_response_logit
+from safetytooling.data_models import ChatMessage, LLMResponse, MessageRole, Prompt
+from safetytooling.utils.prompt_utils import get_prompt_template
 from tqdm.asyncio import tqdm_asyncio
 from typing_extensions import Self
-
-from safetytooling.safetytooling.apis import InferenceAPI
-from safetytooling.safetytooling.apis.utils import binary_response_logit
-from safetytooling.safetytooling.data_models import ChatMessage, LLMResponse, MessageRole, Prompt
-from safetytooling.safetytooling.utils.prompt_utils import get_prompt_template
 
 
 class AlpacaEvalCompletion(pydantic.BaseModel):

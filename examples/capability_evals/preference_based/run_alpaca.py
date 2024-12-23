@@ -5,11 +5,11 @@ import dataclasses
 import logging
 from pathlib import Path
 
+from safetytooling.utils import utils
+from safetytooling.utils.experiment_utils import ExperimentConfigBase
 from simple_parsing import ArgumentParser
 
 from examples.capability_evals.preference_based import alpaca
-from safetytooling.safetytooling.utils import utils
-from safetytooling.safetytooling.utils.experiment_utils import ExperimentConfigBase
 
 LOGGER = logging.getLogger(__name__)
 

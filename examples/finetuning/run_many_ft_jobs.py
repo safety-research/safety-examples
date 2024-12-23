@@ -4,11 +4,10 @@ import itertools
 from multiprocessing import Manager, Pool
 from pathlib import Path
 
+from safetytooling.apis.finetuning.run import Config as ExperimentConfigFinetuning
+from safetytooling.apis.finetuning.run import main as finetuning_run_main
+from safetytooling.utils import utils
 from tqdm import tqdm
-
-from safetytooling.safetytooling.apis.finetuning.run import Config as ExperimentConfigFinetuning
-from safetytooling.safetytooling.apis.finetuning.run import main as finetuning_run_main
-from safetytooling.safetytooling.utils import utils
 
 
 def send_ft_job(args):

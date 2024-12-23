@@ -3,6 +3,7 @@ import random
 from pathlib import Path
 
 import jsonlines
+from safetytooling.data_models.dataset import DatasetQuestion
 from simple_parsing import ArgumentParser
 
 from examples.capability_evals.multi_choice.dataset import SavedMultiChoiceDataset
@@ -28,7 +29,6 @@ from examples.capability_evals.multi_choice.datasets.truthful import (
     TinyTruthfulDataset,
     TruthfulDataset,
 )
-from safetytooling.safetytooling.data_models.dataset import DatasetQuestion
 
 
 @dataclasses.dataclass

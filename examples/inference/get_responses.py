@@ -5,12 +5,11 @@ import pathlib
 import traceback
 
 import pandas as pd
+from safetytooling.apis import InferenceAPI
+from safetytooling.utils import utils
+from safetytooling.utils.experiment_utils import ExperimentConfigBase
 from simple_parsing import ArgumentParser
 from tqdm.auto import tqdm
-
-from safetytooling.safetytooling.apis import InferenceAPI
-from safetytooling.safetytooling.utils import utils
-from safetytooling.safetytooling.utils.experiment_utils import ExperimentConfigBase
 
 LOGGER = logging.getLogger(__name__)
 

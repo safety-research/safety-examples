@@ -8,14 +8,14 @@ import pandas as pd
 import pydantic
 import simple_parsing
 import simple_parsing.helpers
+from safetytooling.data_models.messages import ChatMessage, MessageRole, Prompt
+from safetytooling.utils import utils
+from safetytooling.utils.experiment_utils import ExperimentConfigBase
+from safetytooling.utils.prompt_utils import extract_between_tags, extract_tags, get_prompt_template
 from termcolor import cprint
 from tqdm.auto import tqdm
 
 from examples.inference.run_classifier import get_model_response as get_classifier_response
-from safetytooling.safetytooling.data_models.messages import ChatMessage, MessageRole, Prompt
-from safetytooling.safetytooling.utils import utils
-from safetytooling.safetytooling.utils.experiment_utils import ExperimentConfigBase
-from safetytooling.safetytooling.utils.prompt_utils import extract_between_tags, extract_tags, get_prompt_template
 
 LOGGER = logging.getLogger(__name__)
 

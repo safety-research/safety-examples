@@ -2,7 +2,7 @@ import json
 import random
 from abc import ABC, abstractmethod
 
-from safetytooling.safetytooling.data_models.dataset import DatasetQuestion
+from safetytooling.data_models.dataset import DatasetQuestion
 
 
 class Dataset(ABC):

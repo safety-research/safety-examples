@@ -8,6 +8,10 @@ from pathlib import Path
 from typing import Any
 
 import jsonlines
+from safetytooling.apis import InferenceAPI
+from safetytooling.data_models import ChatMessage, MessageRole, Prompt
+from safetytooling.utils.experiment_utils import ExperimentConfigBase
+from safetytooling.utils.prompt_utils import get_prompt_template
 from simple_parsing import ArgumentParser
 from tqdm.asyncio import tqdm_asyncio
 from tqdm.auto import tqdm
@@ -17,10 +21,6 @@ from examples.capability_evals.multi_choice.load import (
     load_saved_dataset_from_config,
 )
 from examples.capability_evals.multi_choice.score import ScoreConfig, get_accuracy
-from safetytooling.safetytooling.apis import InferenceAPI
-from safetytooling.safetytooling.data_models import ChatMessage, MessageRole, Prompt
-from safetytooling.safetytooling.utils.experiment_utils import ExperimentConfigBase
-from safetytooling.safetytooling.utils.prompt_utils import get_prompt_template
 
 LOGGER = logging.getLogger(__name__)
 

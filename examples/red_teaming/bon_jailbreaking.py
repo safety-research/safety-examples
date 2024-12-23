@@ -12,16 +12,16 @@ from typing import List, Tuple
 import pandas as pd
 import pydantic
 import simple_parsing
+from safetytooling.apis.inference.api import InferenceAPI
+from safetytooling.data_models.messages import ChatMessage, MessageRole, Prompt
+from safetytooling.data_models.utils import RecitationRateFailureError
+from safetytooling.utils import utils
+from safetytooling.utils.experiment_utils import ExperimentConfigBase
+from safetytooling.utils.prompt_utils import get_prompt_template
+from safetytooling.utils.text_utils import get_attack_string, get_tokenizer
 from tenacity import retry, stop_after_attempt, wait_fixed
 
 from examples.inference.run_classifier import get_model_response as get_classifier_response
-from safetytooling.safetytooling.apis.inference.api import InferenceAPI
-from safetytooling.safetytooling.data_models.messages import ChatMessage, MessageRole, Prompt
-from safetytooling.safetytooling.data_models.utils import RecitationRateFailureError
-from safetytooling.safetytooling.utils import utils
-from safetytooling.safetytooling.utils.experiment_utils import ExperimentConfigBase
-from safetytooling.safetytooling.utils.prompt_utils import get_prompt_template
-from safetytooling.safetytooling.utils.text_utils import get_attack_string, get_tokenizer
 
 LOGGER = logging.getLogger(__name__)
 

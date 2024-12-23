@@ -1,12 +1,12 @@
 import logging
 import random
 
+from safetytooling.utils import utils
+from safetytooling.utils.prompt_utils import get_prompt_template
 from simple_parsing import ArgumentParser
 from tqdm import tqdm
 
 from examples.capability_evals.multi_choice.load import FormatConfig, load_dataset_from_config
-from safetytooling.safetytooling.utils import utils
-from safetytooling.safetytooling.utils.prompt_utils import get_prompt_template
 
 LOGGER = logging.getLogger(__name__)
 
