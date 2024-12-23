@@ -13,7 +13,7 @@ from typing_extensions import Self
 from safetytooling.safetytooling.apis import InferenceAPI
 from safetytooling.safetytooling.apis.utils import binary_response_logit
 from safetytooling.safetytooling.data_models import ChatMessage, LLMResponse, MessageRole, Prompt
-from safetytooling.safetytooling.utils import utils
+from safetytooling.safetytooling.utils.prompt_utils import get_prompt_template
 
 
 class AlpacaEvalCompletion(pydantic.BaseModel):
@@ -158,8 +158,8 @@ async def compare_via_alpaca_eval_template(
     if api is None:
         api = InferenceAPI.get_default_global_api()
 
-    system_prompt = utils.get_prompt_template("alpaca-eval/default-system-prompt.jinja").render()
-    user_prompt = utils.get_prompt_template("alpaca-eval/default-user-prompt.jinja").render(
+    system_prompt = get_prompt_template("alpaca-eval/default-system-prompt.jinja").render()
+    user_prompt = get_prompt_template("alpaca-eval/default-user-prompt.jinja").render(
         instruction=instruction, output_m=output1, output_M=output2
     )
 

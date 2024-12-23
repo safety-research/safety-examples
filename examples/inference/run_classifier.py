@@ -1,33 +1,10 @@
-"""
-See experiments/harmbench-1.0-grader-analysis/2-gen-and-grade-responses.sh
-and experiments/harmbench-1.0-grader-analysis/4-new-grader-dev.ipynb for
-sample usage.
-
-run_classifier_v2 has the following new features compared to run_classifier:
-1. We can specify a custom template, along with custom fields to that template.
-2. We can parse logprobs.
-3. We can specify multiple models.
-4. Supports n_samples, thus things are returned as a list. You can explode these
-in pandas to unlist the responses.
-5. The main() function returns the classifier responses, so we can now use this
-call run_classifier_v2 as a library.
-6. We do
-    `from tqdm.auto import tqdm`
-instead of
-    `from tqdm.asyncio import tqdm_asyncio`
-This gives us a notebook compatible compatible progress bar.
-"""
-
 import asyncio
-import concurrent.futures
 import dataclasses
-import functools
 import json
 import logging
 import pathlib
 import traceback
 
-import lark
 import pandas as pd
 import scipy.special
 import simple_parsing
@@ -40,6 +17,7 @@ from safetytooling.safetytooling.apis.utils import binary_response_logit
 from safetytooling.safetytooling.data_models.messages import Prompt
 from safetytooling.safetytooling.utils import utils
 from safetytooling.safetytooling.utils.experiment_utils import ExperimentConfigBase
+from safetytooling.safetytooling.utils.prompt_utils import get_prompt_template
 
 LOGGER = logging.getLogger(__name__)
 
@@ -92,15 +70,6 @@ class ExperimentConfig(ExperimentConfigBase):
             assert self.n_samples == 1, "n_samples must be 1 if temperature is 0"
 
 
-def attempt_parse(text: str, classifier_template: str) -> bool:
-    _, parser = utils.get_prompt_template_and_parser(classifier_template)
-    try:
-        parser.parse(text)
-        return True
-    except lark.UnexpectedInput:
-        return False
-
-
 async def get_model_response(
     input_obj: dict,
     classifier_model: str,
@@ -110,8 +79,6 @@ async def get_model_response(
     temperature: float,
     max_tokens: int,
     n_samples: int = 1,
-    n_retries_for_parsing: int | None = None,
-    parsing_executor: concurrent.futures.Executor | None = None,
     get_logprobs: bool = False,
     logprob_token_idx: int = 0,
     token_group_1: tuple[str, ...] = ("yes", "Yes", "YES", "y", "Y"),
@@ -138,48 +105,21 @@ async def get_model_response(
         return output_obj
 
     try:
-        prompt_template = utils.get_prompt_template(classifier_template)
+        prompt_template = get_prompt_template(classifier_template)
         prompt = Prompt.from_almj_prompt_format(
             prompt_template.render(**{k: input_obj[v] for k, v in classifier_fields.items()})
         )
 
-        for cur_retry_for_parsing in range(n_retries_for_parsing or 1):
-            responses = await api.__call__(
-                model_ids=classifier_model,
-                prompt=prompt,
-                temperature=temperature,
-                max_tokens=max_tokens,
-                print_prompt_and_response=print_prompt_and_response,
-                n=n_samples,
-                **(dict(logprobs=n_logprobs) if get_logprobs else dict()),
-                **(dict(seed=seed) if classifier_model in GPT_CHAT_MODELS else dict()),
-            )
-
-            if n_retries_for_parsing is None:
-                break
-
-            assert parsing_executor is not None
-            parse_oks = []
-            for response in responses:
-                parse_oks.append(
-                    await asyncio.get_running_loop().run_in_executor(
-                        parsing_executor,
-                        functools.partial(
-                            attempt_parse,
-                            classifier_template=classifier_template,
-                        ),
-                        response.completion,
-                    )
-                )
-
-            if all(parse_oks):
-                break
-
-            seed = 0 if seed is None else seed + 1
-            LOGGER.error(
-                f"Failed to parse response in attempt {cur_retry_for_parsing + 1}; "
-                f"Retrying with incremented seed {seed}"
-            )
+        responses = await api.__call__(
+            model_ids=classifier_model,
+            prompt=prompt,
+            temperature=temperature,
+            max_tokens=max_tokens,
+            print_prompt_and_response=print_prompt_and_response,
+            n=n_samples,
+            **(dict(logprobs=n_logprobs) if get_logprobs else dict()),
+            **(dict(seed=seed) if classifier_model in GPT_CHAT_MODELS else dict()),
+        )
 
         LOGGER.info(f"Running cost: ${api.running_cost:.3f}")
 
@@ -258,34 +198,31 @@ async def main(
     if cfg.add_response_id:
         input_objs = [obj | dict(response_id=i) for i, obj in enumerate(input_objs)]
 
-    with concurrent.futures.ProcessPoolExecutor(max_workers=cfg.n_parsing_workers) as parsing_executor:
-        classifier_responses: list[dict] = await tqdm.gather(
-            *[
-                get_model_response(
-                    input_obj=obj,
-                    classifier_model=cm,
-                    api=cfg.api,
-                    classifier_template=cfg.classifier_template,
-                    classifier_fields=cfg.classifier_fields,
-                    temperature=cfg.temperature,
-                    max_tokens=cfg.max_tokens,
-                    n_samples=cfg.n_samples,
-                    n_retries_for_parsing=cfg.n_retries_for_parsing,
-                    parsing_executor=parsing_executor,
-                    get_logprobs=cfg.get_logprobs,
-                    logprob_token_idx=cfg.logprob_token_idx,
-                    token_group_1=cfg.token_group_1,
-                    token_group_2=cfg.token_group_2,
-                    print_prompt_and_response=cfg.print_prompt_and_response,
-                    seed=cfg.seed,
-                    model_output_tag=cfg.model_output_tag,
-                    n_logprobs=cfg.n_logprobs,
-                    simple_tag_output=cfg.simple_tag_output,
-                )
-                for obj in input_objs
-                for cm in cfg.classifier_models
-            ]
-        )
+    classifier_responses: list[dict] = await tqdm.gather(
+        *[
+            get_model_response(
+                input_obj=obj,
+                classifier_model=cm,
+                api=cfg.api,
+                classifier_template=cfg.classifier_template,
+                classifier_fields=cfg.classifier_fields,
+                temperature=cfg.temperature,
+                max_tokens=cfg.max_tokens,
+                n_samples=cfg.n_samples,
+                get_logprobs=cfg.get_logprobs,
+                logprob_token_idx=cfg.logprob_token_idx,
+                token_group_1=cfg.token_group_1,
+                token_group_2=cfg.token_group_2,
+                print_prompt_and_response=cfg.print_prompt_and_response,
+                seed=cfg.seed,
+                model_output_tag=cfg.model_output_tag,
+                n_logprobs=cfg.n_logprobs,
+                simple_tag_output=cfg.simple_tag_output,
+            )
+            for obj in input_objs
+            for cm in cfg.classifier_models
+        ]
+    )
 
     classifier_responses = [
         x

@@ -19,8 +19,8 @@ from examples.capability_evals.multi_choice.load import (
 from examples.capability_evals.multi_choice.score import ScoreConfig, get_accuracy
 from safetytooling.safetytooling.apis import InferenceAPI
 from safetytooling.safetytooling.data_models import ChatMessage, MessageRole, Prompt
-from safetytooling.safetytooling.utils import utils
 from safetytooling.safetytooling.utils.experiment_utils import ExperimentConfigBase
+from safetytooling.safetytooling.utils.prompt_utils import get_prompt_template
 
 LOGGER = logging.getLogger(__name__)
 
@@ -67,8 +67,8 @@ async def process_row(
         letters_str = ", ".join(letters)
         correct_letter = letters[choices.index(correct_answer)]
 
-        system_template = utils.get_prompt_template("capability-evals/system-prompt.jinja")
-        user_template = utils.get_prompt_template("capability-evals/user-prompt.jinja")
+        system_template = get_prompt_template("capability-evals/system-prompt.jinja")
+        user_template = get_prompt_template("capability-evals/user-prompt.jinja")
         system_prompt = system_template.render()
         user_prompt = user_template.render(
             question=question,

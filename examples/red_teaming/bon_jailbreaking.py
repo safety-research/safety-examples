@@ -20,6 +20,7 @@ from safetytooling.safetytooling.data_models.messages import ChatMessage, Messag
 from safetytooling.safetytooling.data_models.utils import RecitationRateFailureError
 from safetytooling.safetytooling.utils import utils
 from safetytooling.safetytooling.utils.experiment_utils import ExperimentConfigBase
+from safetytooling.safetytooling.utils.prompt_utils import get_prompt_template
 from safetytooling.safetytooling.utils.text_utils import get_attack_string, get_tokenizer
 
 LOGGER = logging.getLogger(__name__)
@@ -524,11 +525,11 @@ async def get_completion(
     messages = []
     if system_prompt:
         if "claude_" in system_prompt:
-            system_prompt_content = utils.get_prompt_template(system_prompt).render(
+            system_prompt_content = get_prompt_template(system_prompt).render(
                 current_date=datetime.now().strftime("%Y-%m-%d")
             )
         else:
-            system_prompt_content = utils.get_prompt_template(system_prompt).render()
+            system_prompt_content = get_prompt_template(system_prompt).render()
         # Parse multi-message prompt if present
         if "=" * 8 in system_prompt_content:
             multi_message_prompt = Prompt.from_almj_prompt_format(system_prompt_content, strip_content=True)
@@ -710,11 +711,11 @@ async def main(cfg: ExperimentConfig):
 
         prefix = None
         if cfg.prefix_path:
-            prefix = utils.get_prompt_template(cfg.prefix_path).render()
+            prefix = get_prompt_template(cfg.prefix_path).render()
 
         suffix = None
         if cfg.suffix_path:
-            suffix = utils.get_prompt_template(cfg.suffix_path).render()
+            suffix = get_prompt_template(cfg.suffix_path).render()
 
         seed0 = n * cfg.num_concurrent_k + cfg.seed * 1e6
         data = [

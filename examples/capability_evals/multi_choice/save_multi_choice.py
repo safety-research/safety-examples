@@ -6,12 +6,13 @@ from tqdm import tqdm
 
 from examples.capability_evals.multi_choice.load import FormatConfig, load_dataset_from_config
 from safetytooling.safetytooling.utils import utils
+from safetytooling.safetytooling.utils.prompt_utils import get_prompt_template
 
 LOGGER = logging.getLogger(__name__)
 
 
 def format_evaluation(cfg: FormatConfig):
-    user_template = utils.get_prompt_template("capability-evals/user-prompt.jinja")
+    user_template = get_prompt_template("capability-evals/user-prompt.jinja")
 
     if cfg.input_file is not None:
         input_data = utils.load_jsonl(cfg.input_file)
