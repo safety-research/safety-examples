@@ -7,7 +7,7 @@ model="gpt-4o-mini"
 temperature=1.0
 
 
-echo python -m examples.red_teaming.pair \
+python -m examples.red_teaming.pair \
     --request_input_file $input_file_path \
     --output_dir $output_dir \
     --n_steps 2 \

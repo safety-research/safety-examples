@@ -3,23 +3,19 @@ import dataclasses
 import logging
 import random
 import traceback
-from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-import jsonlines
 from safetytooling.apis import InferenceAPI
 from safetytooling.data_models import ChatMessage, MessageRole, Prompt
+from safetytooling.utils import utils
 from safetytooling.utils.experiment_utils import ExperimentConfigBase
 from safetytooling.utils.prompt_utils import get_prompt_template
 from simple_parsing import ArgumentParser
 from tqdm.asyncio import tqdm_asyncio
 from tqdm.auto import tqdm
 
-from examples.capability_evals.multi_choice.load import (
-    LoadConfig,
-    load_saved_dataset_from_config,
-)
+from examples.capability_evals.multi_choice.load import load_dataset_from_config
 from examples.capability_evals.multi_choice.score import ScoreConfig, get_accuracy
 
 LOGGER = logging.getLogger(__name__)
@@ -27,15 +23,15 @@ LOGGER = logging.getLogger(__name__)
 
 @dataclasses.dataclass
 class ExperimentConfig(ExperimentConfigBase):
-    dataset: str = None
-    path_to_dataset: str = None
+    dataset: str
+    path_to_dataset: Path | None = None
+    path_to_output: Path | None = None
     model: str = "gpt-3.5-turbo-1106"
 
     temperature: float = 0.0
     max_tokens: int = 10
     n_rows_to_process: int | None = None
-    max_workers: int = 1
-
+    max_workers: int = 100
     prefill: bool = False
 
 
@@ -113,38 +109,32 @@ async def process_row(
 
 
 async def main(cfg: ExperimentConfig):
-
-    assert cfg.dataset is not None or cfg.path_to_dataset is not None, "Must specify either dataset or path_to_dataset"
     if cfg.path_to_dataset is not None:
-        cfg.dataset = Path(cfg.path_to_dataset).stem
-
-    exp_time = datetime.now().strftime("%Y-%B-%d-%H-%M-%S")
-    output_file = cfg.output_dir / f"{cfg.model}_{exp_time}.jsonl"  # TODO: how do we want to name the output file?
+        assert cfg.dataset in str(cfg.path_to_dataset), "dataset must be in path_to_dataset"
+    else:
+        cfg.path_to_dataset = cfg.output_dir / f"{cfg.dataset}.jsonl"
 
     LOGGER.info(f"Loading dataset {cfg.dataset}...")
-    if output_file.exists():
-        input_objs = []
-        with jsonlines.open(output_file, "r") as reader:
-            for obj in reader:
-                input_objs.append(obj)
+    if cfg.path_to_dataset.exists():
+        input_objs = utils.load_jsonl(cfg.path_to_dataset)
     else:
-        input_objs = load_saved_dataset_from_config(
-            LoadConfig(
-                dataset=cfg.dataset,
-                path_to_dataset=cfg.path_to_dataset,
-                limit=cfg.n_rows_to_process,
-                seed=cfg.seed,
-            )
+        input_objs = load_dataset_from_config(
+            dataset=cfg.dataset,
+            path_to_dataset=cfg.path_to_dataset,
         )
-        # convert to dict
         input_objs = [obj.model_dump() for obj in input_objs]
+
+    # shuffle and slice dataset
+    random.seed(cfg.seed)
+    input_objs = random.sample(input_objs, len(input_objs))
+    input_objs = input_objs[: cfg.n_rows_to_process]
 
     incomplete_objs = [obj for obj in input_objs if not obj.get("success", False)]
     complete_objs = [obj for obj in input_objs if obj.get("success", False)]
 
     LOGGER.info(f"Constructing tasks {cfg.dataset} (incomplete {len(incomplete_objs)}/{len(input_objs)})...")
-    lock = asyncio.Lock()  # lock for thread safe shuffling
-    semaphore = asyncio.Semaphore(cfg.max_workers)  # Add this line
+    lock = asyncio.Lock()
+    semaphore = asyncio.Semaphore(cfg.max_workers)
 
     async def process_with_semaphore(row_obj):
         async with semaphore:
@@ -158,16 +148,16 @@ async def main(cfg: ExperimentConfig):
 
     LOGGER.info(f"Running cost: ${cfg.api.running_cost:.3f}")
 
-    LOGGER.info(f"Writing output {cfg.dataset} to {output_file}...")
-    with jsonlines.open(output_file, mode="w") as writer:
-        for obj in tqdm(output_objs):
-            writer.write(obj)
+    LOGGER.info(f"Writing output {cfg.dataset} to {cfg.path_to_output}...")
+    if cfg.path_to_output is None:
+        cfg.path_to_output = cfg.output_dir / f"{cfg.dataset}-{cfg.model}.jsonl"
+    utils.save_jsonl(cfg.path_to_output, output_objs)
 
     cfg.log_api_cost(metadata={"dataset": cfg.dataset, "model": cfg.model})
 
     get_accuracy(
         ScoreConfig(
-            input=output_file,
+            input=cfg.path_to_output,
             results_file=cfg.output_dir / "results.jsonl",
             verbose=True,
         )

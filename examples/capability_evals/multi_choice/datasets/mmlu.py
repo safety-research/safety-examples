@@ -71,6 +71,7 @@ TOPICS = [
 class MMLUDataset(Dataset):
     def __init__(
         self,
+        dataset_name: str = "tasksource/mmlu",
         dataset_split: str = "test",
         topics: list = TOPICS,
         topic_limit: int = 20,
@@ -78,7 +79,7 @@ class MMLUDataset(Dataset):
         datasets = []
         for topic in topics:
             print(f"Loading MMLU topic: {topic}")
-            dataset = load_dataset("tasksource/mmlu", topic)
+            dataset = load_dataset(dataset_name, topic)
             dataset = dataset[dataset_split]
             orig_length = len(dataset)
             topic_limit = min(topic_limit, orig_length)
@@ -116,7 +117,4 @@ class TinyMMLUDataset(MMLUDataset):
         self,
         dataset_split: str = "test",
     ):
-
-        LOGGER.info("Downloading tiny MMLU dataset and modifying")
-        self.dataset = load_dataset("tinyBenchmarks/tinyMMLU", split=dataset_split)
-        self.dataset = self.dataset.shuffle(seed=42)
+        super().__init__(dataset_name="tinyBenchmarks/tinyMMLU", dataset_split=dataset_split, topics=["all"])
