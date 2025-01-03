@@ -27,3 +27,5 @@ SECRETS
 .vscode/
 
 exp
+.env
+__pycache__/
