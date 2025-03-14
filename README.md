@@ -4,46 +4,49 @@ This repository uses `safety-tooling` as a submodule and showcases how to use th
 
 ## Set-up
 
-First pull the submodules:
+1. First pull the submodules:
 
 ```bash
 git submodule update --init --recursive
 ```
 
-Follow the instructions in safety-tooling/README.md to set up the environment.
+2. Follow the instructions in safety-tooling/README.md to set up the environment.
 
-Install the requirements:
+3. Install the requirements:
 
 ```bash
-pip install -r safety-tooling/requirements.txt
-pip install -r requirements.txt
+uv pip install -e safety-tooling
+uv pip install -r safety-tooling/requirements_dev.txt
+uv pip install -r requirements.txt # once you have added any other dependencies
 ```
 
+
+## Run tests
 To run tests, cd into the safety-tooling directory and run:
 ```bash
 python -m pytest -n 6
 ```
 
-## Note on submodules
-The submodule must be in your pythonpath. You can automatically do this by adding it in the `<main_module>/__init__.py` of your main module (e.g. examples/__init__.py). You then have to call your code like `python -m <main_module>.<other_module>`.
+## Add the submodule to your pythonpath
+The submodule must be in your pythonpath for you to be able to use it. There are a few ways to do this:
 
-For VSCode to pick up the module so you can cmd click functions easily, you need to make sure your repo has a .vscode file like this or you add to your global config.
+1. Recommended: Install the submodule with `uv pip install -e .` in the root of the repo.
+2. Add the submodule to your pythonpath by adding it in the `<main_module>/__init__.py` of your main module (e.g. examples/__init__.py). You then have to call your code like `python -m <main_module>.<other_module>`.
+3. Add the submodule to your pythonpath manually. E.g. in a notebook, you can use this function at the top of your notebooks:
+    ```python
+    import os
+    import pathlib
+    import sys
 
-In a notebook, you also have to add it to your python path. You can use this function at the top of your notebooks:
-```python
-import os
-import pathlib
-import sys
 
+    def put_submodule_in_python_path(submodule_name: str):
+        repo_root = pathlib.Path(os.getcwd())
+        submodule_path = repo_root / submodule_name
+        if submodule_path.exists():
+            sys.path.append(str(submodule_path))
 
-def put_submodule_in_python_path(submodule_name: str):
-    repo_root = pathlib.Path(os.getcwd())
-    submodule_path = repo_root / submodule_name
-    if submodule_path.exists():
-        sys.path.append(str(submodule_path))
-
-put_submodule_in_python_path("safety-tooling")
-```
+    put_submodule_in_python_path("safety-tooling")
+    ```
 
 ## Examples
 

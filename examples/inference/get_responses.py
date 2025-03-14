@@ -49,7 +49,7 @@ async def get_model_response(
         request = input_obj[request_tag]
 
         responses = await api.ask_single_question(
-            model_ids=model_id,
+            model_id=model_id,
             question=request,
             n=n_samples,
             temperature=temperature,

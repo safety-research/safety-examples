@@ -4,8 +4,8 @@ import itertools
 from multiprocessing import Manager, Pool
 from pathlib import Path
 
-from safetytooling.apis.finetuning.run import Config as ExperimentConfigFinetuning
-from safetytooling.apis.finetuning.run import main as finetuning_run_main
+from safetytooling.apis.finetuning.openai.run import OpenAIFTConfig as ExperimentConfigFinetuning
+from safetytooling.apis.finetuning.openai.run import main as finetuning_run_main
 from safetytooling.utils import utils
 from tqdm import tqdm
 

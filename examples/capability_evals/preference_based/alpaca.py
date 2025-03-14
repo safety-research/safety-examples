@@ -53,7 +53,7 @@ async def get_completions_on_alpaca(
         if completion_fn is not None:
             output = await completion_fn(row.instruction)
         else:
-            output = (await api.ask_single_question(model_ids=model_id, question=row.instruction))[0]
+            output = (await api.ask_single_question(model_id=model_id, question=row.instruction))[0]
 
         return AlpacaEvalCompletion(
             dataset=row.dataset,
@@ -173,7 +173,7 @@ async def compare_via_alpaca_eval_template(
     )
 
     (judge_response,) = await api.__call__(
-        model_ids=judge_id,
+        model_id=judge_id,
         prompt=prompt,
         max_tokens=max_tokens,
         temperature=temperature,

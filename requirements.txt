@@ -1,6 +1,1 @@
-# install research-tooling/requirements.txt first
-
-simple-parsing==0.1.6
-pydantic==2.10.4
-tenacity==8.5.0
-jsonlines==4.0.0
+# install safety-tooling first, then add any other dependencies here

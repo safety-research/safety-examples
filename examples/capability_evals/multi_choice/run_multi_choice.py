@@ -83,7 +83,7 @@ async def process_row(
             prompt = prompt.add_assistant_message("Answer: ")
 
         response = await api(
-            model_ids=cfg.model,
+            model_id=cfg.model,
             prompt=prompt,
             temperature=cfg.temperature,
             max_tokens=cfg.max_tokens,

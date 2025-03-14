@@ -139,7 +139,7 @@ async def get_attacker_model_response(
 ) -> str | None:
     try:
         responses = await cfg.api(
-            model_ids=cfg.attacker_model,
+            model_id=cfg.attacker_model,
             prompt=attacker_prompt,
             temperature=cfg.attacker_temperature,
             print_prompt_and_response=cfg.print_prompt_and_response,
@@ -160,7 +160,7 @@ async def get_attacker_model_response(
 
 async def run_model_and_defense(model_input: Prompt, attacker_improvement: str, cfg: ExperimentConfig) -> PairStep:
     response_obj = await cfg.api(
-        model_ids=cfg.target_model,
+        model_id=cfg.target_model,
         prompt=model_input,
         temperature=0,
         print_prompt_and_response=cfg.print_prompt_and_response,

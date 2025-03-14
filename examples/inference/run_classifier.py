@@ -106,7 +106,7 @@ async def get_model_response(
         )
 
         responses = await api.__call__(
-            model_ids=classifier_model,
+            model_id=classifier_model,
             prompt=prompt,
             temperature=temperature,
             max_tokens=max_tokens,
