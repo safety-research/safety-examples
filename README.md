@@ -30,8 +30,8 @@ python -m pytest -n 6
 ## Add the submodule to your pythonpath
 The submodule must be in your pythonpath for you to be able to use it. There are a few ways to do this:
 
-1. Recommended: Install the submodule with `uv pip install -e .` in the root of the repo.
-2. Add the submodule to your pythonpath by adding it in the `<main_module>/__init__.py` of your main module (e.g. examples/__init__.py). You then have to call your code like `python -m <main_module>.<other_module>`.
+1. Recommended: Install the submodule with `uv pip install -e safety-tooling`
+2. Add the submodule to your pythonpath in the `<main_module>/__init__.py` of your main module (e.g. see `examples/__init__.py`). You then have to call your code like `python -m <main_module>.<other_module>`.
 3. Add the submodule to your pythonpath manually. E.g. in a notebook, you can use this function at the top of your notebooks:
     ```python
     import os
