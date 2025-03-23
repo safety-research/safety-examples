@@ -1,7 +1,7 @@
 #!/bin/bash
 timestamp=$(date +%Y%m%d_%H%M%S)
 work_dir=/workspace/exp/johnh/250323_slurm_test
-venv_dir=/home/johnh/git/axolotl/.venv
+venv_dir=/home/johnh/git/axolotl/.venv # annoyingly right now this has to be made manually on both nodes since venvs on the network drive are slow
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 config=$SCRIPT_DIR/qlora-fsdp-8b-test.yaml
 env_file=$SCRIPT_DIR/../../.env
