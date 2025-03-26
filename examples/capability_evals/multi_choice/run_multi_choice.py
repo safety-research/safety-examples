@@ -122,7 +122,6 @@ async def main(cfg: ExperimentConfig):
             dataset=cfg.dataset,
             path_to_dataset=cfg.path_to_dataset,
         )
-        input_objs = [obj.model_dump() for obj in input_objs]
 
     # shuffle and slice dataset
     random.seed(cfg.seed)

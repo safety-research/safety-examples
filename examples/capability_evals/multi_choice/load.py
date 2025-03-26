@@ -58,7 +58,7 @@ def load_dataset_from_config(dataset: str, path_to_dataset: Path | None = None) 
         else:
             raise ValueError(f"Unknown dataset: {dataset}")
 
-    questions = dataset.convert_to_questions()
+    questions = dataset.convert_to_questions(dataset.dataset)
 
     if path_to_dataset is not None:
         path_to_dataset.parent.mkdir(parents=True, exist_ok=True)
