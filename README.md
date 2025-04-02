@@ -10,7 +10,7 @@ This repository uses `safety-tooling` as a submodule and showcases how to use th
 git submodule update --init --recursive
 ```
 
-2. Follow the instructions in safety-tooling/README.md to set up the environment.
+2. Follow the instructions in safety-tooling/README.md to set up the environment. Ensure to make a `.env` file with your API keys. This `.env` file can be in the root of the repo or in the safety-tooling submodule (safetytooling.utils.setup_environment() will check both places).
 
 3. Install the requirements:
 
