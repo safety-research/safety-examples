@@ -68,3 +68,19 @@ The repo has 4 examples:
 - Multi choice benchmarks
     - `experiments/examples/241223_running_examples/run_capability_evals.sh`
     - Run benchmarks like MMLU and find the accuracy.
+
+## Citation
+
+If you use this repo in your work, please cite it as follows:
+
+```bibtex
+@misc{safety_examples_2025,
+  author       = {John Hughes and safety-research},
+  title        = {safety-research/safety-examples: v1.0.0},
+  year         = {2025},
+  publisher    = {Zenodo},
+  version      = {v1.0.0},
+  doi          = {10.5281/zenodo.15363605},
+  url          = {https://doi.org/10.5281/zenodo.15363605}
+}
+```
