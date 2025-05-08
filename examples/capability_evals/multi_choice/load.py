@@ -11,6 +11,7 @@ from examples.capability_evals.multi_choice.datasets.arc import (
     TinyArcDataset,
 )
 from examples.capability_evals.multi_choice.datasets.commonsense import CommonsenseDataset
+from examples.capability_evals.multi_choice.datasets.gpqa import GpqaDataset
 from examples.capability_evals.multi_choice.datasets.hellaswag import (
     HellaswagDataset,
     TinyHellaswagDataset,
@@ -46,6 +47,7 @@ dataset_classes = {
     "tiny_hellaswag": TinyHellaswagDataset,
     "tiny_truthful": TinyTruthfulDataset,
     "tiny_arc": TinyArcDataset,
+    "gpqa": GpqaDataset,
 }
 
 
@@ -58,7 +60,7 @@ def load_dataset_from_config(dataset: str, path_to_dataset: Path | None = None) 
         else:
             raise ValueError(f"Unknown dataset: {dataset}")
 
-    questions = dataset.convert_to_questions(dataset.dataset)
+    questions = dataset.convert_to_questions()
 
     if path_to_dataset is not None:
         path_to_dataset.parent.mkdir(parents=True, exist_ok=True)
