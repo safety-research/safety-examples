@@ -5,12 +5,15 @@ from safetytooling.data_models.dataset import DatasetQuestion
 
 
 class Dataset(ABC):
+    def __init__(self, dataset: list[dict]):
+        self.dataset = dataset
+
     @abstractmethod
     def unpack_single(self, row: dict, index: int) -> DatasetQuestion:
         pass
 
-    def convert_to_questions(self, dataset: list) -> list[DatasetQuestion]:
-        return [self.unpack_single(row, i) for i, row in enumerate(dataset)]
+    def convert_to_questions(self) -> list[DatasetQuestion]:
+        return [self.unpack_single(row, i) for i, row in enumerate(self.dataset)]
 
 
 class SavedMultiChoiceDataset(Dataset):
