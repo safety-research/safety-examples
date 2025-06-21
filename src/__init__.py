@@ -1,6 +1,4 @@
 """
-Examples module for safety-examples repository.
-
 This module ensures that the safety-tooling package is properly added to the Python path,
 allowing imports from the safety-tooling submodule to work correctly.
 """
