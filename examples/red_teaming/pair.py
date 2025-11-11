@@ -169,7 +169,11 @@ async def run_model_and_defense(model_input: Prompt, attacker_improvement: str, 
     )
     model_output = response_obj[0].completion
 
-    input_obj = {"behavior_str": cfg.objective, "response": model_output}
+    # set behavior_str to prompt as suggested in https://github.com/centerforaisafety/HarmBench/blob/main/notebooks/run_classifier.ipynb
+    prompt = str(model_input)
+    behavior_str = prompt[prompt.find("user:")+len("user: "):]
+
+    input_obj = {"behavior_str": behavior_str, "response": model_output}
 
     response = await get_classifier_response(
         input_obj,
